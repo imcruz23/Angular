@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 // Cargar la conexion a la base de datos
 const dbConnection = async() => {
         try {
-            await mongoose.connect(process.env.DB_CON, {});
+            await mongoose.connect(process.env.DB_CON, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
             console.log('DB Online');
         } catch (error) {
             console.log(error);

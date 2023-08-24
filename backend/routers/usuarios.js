@@ -6,6 +6,7 @@ const { getUsuarios, crearUsuario, actualizarUsuario, borrarUsuario } = require(
 // Importar express validator
 const { check } = require('express-validator');
 const { validarCampos } = require('../middleware/validar-campos');
+const { validarRol } = require('../middleware/validar-rol');
 
 const router = Router();
 
@@ -17,16 +18,17 @@ router.post('/', [
     check('apellidos', 'El argumento apellidos es obligatorio').notEmpty(),
     check('email', 'El argumento email es obligatorio').notEmpty(),
     check('password', 'El argumento password es obligatorio').notEmpty(),
-    validarCampos
+    validarCampos,
+    validarRol
 ], crearUsuario);
 
 router.put('/:id', [
     check('nombre', 'El argumento nombre es obligatorio').notEmpty(),
     check('apellidos', 'El argumento apellidos es obligatorio').notEmpty(),
     check('email', 'El argumento email es obligatorio').notEmpty(),
-    check('password', 'El argumento password es obligatorio').notEmpty(),
     check('id', 'El identificador no es válido').isMongoId(),
-    validarCampos
+    validarCampos,
+    validarRol
 ], actualizarUsuario);
 
 router.delete('/:id', [
