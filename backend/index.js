@@ -9,11 +9,14 @@ require('dotenv').config();
 
 // Crear app de express
 const app = express();
-
-app.use(cors());
 dbConnection();
 
+
+app.use(cors());
+app.use(express.json());
+
 app.use('/api/usuarios', require('./routers/usuarios'));
+
 
 // Abrir la app en el puerto 3000
 
