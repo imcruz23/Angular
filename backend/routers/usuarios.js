@@ -7,33 +7,45 @@ const { getUsuarios, crearUsuario, actualizarUsuario, borrarUsuario } = require(
 const { check } = require('express-validator');
 const { validarCampos } = require('../middleware/validar-campos');
 const { validarRol } = require('../middleware/validar-rol');
+const { validarJWT } = require('../middleware/validar-jwt');
 
 const router = Router();
 
-router.get('/', getUsuarios);
+router.get('/', [
+    validarJWT,
+    check('id', 'El id del usuario debe ser válido').optional().isMongoId(),
+    check('from', 'El from debe ser numérico').optional().isNumeric(),
+    validarCampos
+], getUsuarios);
 
 router.post('/', [
+    validarJWT,
     // comprobamos mediante el validator si hay errores
-    check('nombre', 'El argumento nombre es obligatorio').notEmpty(),
-    check('apellidos', 'El argumento apellidos es obligatorio').notEmpty(),
-    check('email', 'El argumento email es obligatorio').notEmpty(),
-    check('password', 'El argumento password es obligatorio').notEmpty(),
+    check('nombre', 'El argumento nombre es obligatorio').notEmpty().trim(),
+    check('apellidos', 'El argumento apellidos es obligatorio').notEmpty().trim(),
+    check('email', 'El argumento email es obligatorio').isEmail(),
+    check('password', 'El argumento password es obligatorio').notEmpty().trim(),
+    // campos opcionales
+    check('activo', 'El estado activo debe ser true/false').optional().isBoolean(),
     validarCampos,
-    validarRol
+    validarRol,
 ], crearUsuario);
 
 router.put('/:id', [
-    check('nombre', 'El argumento nombre es obligatorio').notEmpty(),
-    check('apellidos', 'El argumento apellidos es obligatorio').notEmpty(),
-    check('email', 'El argumento email es obligatorio').notEmpty(),
+    validarJWT,
+    check('nombre', 'El argumento nombre es obligatorio').notEmpty().trim(),
+    check('apellidos', 'El argumento apellidos es obligatorio').notEmpty().trim(),
+    check('email', 'El argumento email es obligatorio').isEmail(),
     check('id', 'El identificador no es válido').isMongoId(),
+    check('activo', 'El estado activo debe ser true/false').optional().isBoolean(),
     validarCampos,
     validarRol
 ], actualizarUsuario);
 
 router.delete('/:id', [
+    validarJWT,
     check('id', 'El identificador no es válido').isMongoId(),
-    validarCampos
+    validarCampos,
 ], borrarUsuario);
 
 module.exports = router;

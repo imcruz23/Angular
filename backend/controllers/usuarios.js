@@ -1,16 +1,46 @@
-const Usuario = require('../models/usuarios');
-const { validationResult } = require('express-validator');
+const validator = require('validator');
 const bcrypt = require('bcryptjs');
+
+const Grupo = require('../models/grupos');
+const Usuario = require('../models/usuarios');
 
 const { response } = require('express');
 
 const getUsuarios = async(req, res) => {
+    const from = Number(req.query.from) || 0;
+    const registropp = Number(process.env.DOCSPERPAGE);
+    // Si nos pasan en la query el id, se busca el usuario por id
+    const id = req.query.id;
+
     try {
-        const usuarios = await Usuario.find({});
+        let usuarios, total;
+        if (id) {
+            if (!validator.isMongoId(id)) {
+                return res.json({
+                    ok: false,
+                    msg: 'Controller: El id debe ser válido'
+                });
+            }
+            [usuarios, total] = await Promise.all([
+                Usuario.findById(id).populate('grupo'),
+                Usuario.countDocuments()
+            ]);
+        } else {
+            [usuarios, total] = await Promise.all([
+                Usuario.find({}).skip(from).limit(registropp).populate('grupo'),
+                Usuario.countDocuments()
+            ]);
+        }
+
         res.json({
             ok: true,
             msg: 'getUsuarios',
-            usuarios
+            usuarios,
+            page: {
+                from,
+                registropp,
+                total
+            }
         });
     } catch (error) {
         console.log(error);
@@ -39,7 +69,8 @@ const crearUsuario = async(req, res) => {
         cpassword = bcrypt.hashSync(password, salt);
 
         // Creamos un usuario para almacenarlo en la base de datos
-        const usuario = new Usuario(req.body);
+        const { alta, ...object } = req.body;
+        const usuario = new Usuario(object);
         // Le asignamos la contraseña encriptada
         usuario.password = cpassword;
         // guardamos en la base de datos el usuario

@@ -25,6 +25,18 @@ const UsuarioSchema = Schema({
         type: String,
         require: true,
         default: 'ROL_ALUMNO'
+    },
+    grupo: {
+        type: Schema.Types.ObjectId,
+        ref: 'Grupo'
+    },
+    alta: {
+        type: Date,
+        default: Date.now
+    },
+    activo: {
+        type: Boolean,
+        default: true
     }
 }, { collection: 'usuarios' });
 

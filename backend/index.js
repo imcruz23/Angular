@@ -17,6 +17,7 @@ app.use(express.json());
 
 app.use('/api/usuarios', require('./routers/usuarios'));
 app.use('/api/login', require('./routers/auth'));
+app.use('/api/grupos', require('./routers/grupos'));
 
 
 // Abrir la app en el puerto 3000
