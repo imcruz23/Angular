@@ -19,6 +19,7 @@ router.get('/', [
 ], getUsuarios);
 
 router.post('/', [
+    validarJWT,
     // comprobamos mediante el validator si hay errores
     check('nombre', 'El argumento nombre es obligatorio').notEmpty().trim(),
     check('apellidos', 'El argumento apellidos es obligatorio').notEmpty().trim(),
