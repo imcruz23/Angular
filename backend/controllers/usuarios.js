@@ -148,13 +148,6 @@ const borrarUsuario = async(req, res) => {
     // buscamos el id del token para comprobar si el usuario que solicita el borrado es el mismo id que el del parametro
     const { id, rol } = jwt.verify(token, process.env.JWTSECRET);
 
-    // comprobamos si hay token
-    if (!token) {
-        return res.status(400).json({
-            ok: false,
-            msg: 'El Token es necesario'
-        });
-    }
     try {
         const existeUsuario = await Usuario.findById(uid);
         if (!existeUsuario) {

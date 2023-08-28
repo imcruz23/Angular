@@ -19,6 +19,7 @@ app.use('/api/usuarios', require('./routers/usuarios'));
 app.use('/api/login', require('./routers/auth'));
 app.use('/api/grupos', require('./routers/grupos'));
 app.use('/api/cursos', require('./routers/cursos'));
+app.use('/api/asignaturas', require('./routers/asignaturas'));
 
 // Abrir la app en el puerto 3000
 

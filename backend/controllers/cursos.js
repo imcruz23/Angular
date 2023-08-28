@@ -1,6 +1,7 @@
 const { response } = require('express');
 const validator = require('validator');
 const Curso = require('../models/cursos');
+const jwt = require('jsonwebtoken');
 
 // GET
 const getCursos = async(req, res = response) => {
@@ -62,8 +63,20 @@ const crearCurso = async(req, res = response) => {
 
     const { nombre, nombrecorto } = req.body;
 
+    const token = req.header('x-token');
+
     // Comprobamos si el curso existe buscando en la base de datos si el nombre ya está usado
     try {
+
+        // Primero comprobamos si el usuario es administrador o profesor
+        const { rol } = jwt.verify(token, process.env.JWTSECRET);
+
+        if (rol != 'ROL_PROFESOR' || rol != 'ROL_ADMIN') {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Permisos insuficientes'
+            });
+        }
 
         const existeNombre = await Curso.findOne({ nombre });
 
@@ -118,6 +131,7 @@ const actualizarCurso = async(req, res = response) => {
     const uid = req.params.id;
     const { nombre, nombrecorto } = req.body;
     const object = req.body;
+    const token = req.header('x-token');
 
     try {
         if (!uid) {
@@ -126,7 +140,15 @@ const actualizarCurso = async(req, res = response) => {
                 msg: 'Faltan parametros'
             });
         }
-        // TODO: Comprobar que solo admins o profesores puedan cambiar esto
+
+        const { rol } = jwt.verify(token, process.env.JWTSECRET);
+
+        if (rol != 'ROL_PROFESOR' || rol != 'ROL_ADMIN') {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Permisos insuficientes'
+            });
+        }
 
         const cursoIsSame = await Curso.findOne({ nombre });
 
@@ -161,6 +183,15 @@ const eliminarCurso = async(req, res = response) => {
     const uid = req.params.id;
 
     try {
+        const { rol } = jwt.verify(token, process.env.JWTSECRET);
+
+        if (rol != 'ROL_PROFESOR' || rol != 'ROL_ADMIN') {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Permisos insuficientes'
+            });
+        }
+
         const existeCurso = await Curso.findById(uid);
         if (!existeCurso) {
             return res.status(400).json({
