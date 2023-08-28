@@ -4,10 +4,11 @@ const jwt = require('jsonwebtoken');
 const generarJWT = (uid, rol) => {
     return new Promise((resolve, reject) => {
         const payload = {
-                uid,
-                rol
-            }
-            // Firmamos el payload
+            uid,
+            rol
+        }
+        console.log(payload);
+        // Firmamos el payload
         jwt.sign(payload, process.env.JWTSECRET, {
             expiresIn: '24h'
         }, (err, token) => {

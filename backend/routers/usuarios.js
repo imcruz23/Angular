@@ -6,8 +6,8 @@ const { getUsuarios, crearUsuario, actualizarUsuario, borrarUsuario } = require(
 // Importar express validator
 const { check } = require('express-validator');
 const { validarCampos } = require('../middleware/validar-campos');
-const { validarRol } = require('../middleware/validar-rol');
-const { validarJWT } = require('../middleware/validar-jwt');
+const { validarRol, rolEsAdmin } = require('../middleware/validar-rol');
+const { validarJWT, validarJWTRolAdmin } = require('../middleware/validar-jwt');
 
 const router = Router();
 
@@ -28,7 +28,6 @@ router.post('/', [
     // campos opcionales
     check('activo', 'El estado activo debe ser true/false').optional().isBoolean(),
     validarCampos,
-    validarRol,
 ], crearUsuario);
 
 router.put('/:id', [

@@ -15,7 +15,6 @@ const getGrupos = async(req, res = response) => {
     const registropp = Number(process.env.DOCSPERPAGE);
 
     const id = req.query.id;
-    await console.log("Paso por aqui");
     try {
         let grupo, total
             // si en la query se pasa el id, se le da más importancia

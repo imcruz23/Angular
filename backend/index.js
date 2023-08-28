@@ -20,7 +20,6 @@ app.use('/api/login', require('./routers/auth'));
 app.use('/api/grupos', require('./routers/grupos'));
 app.use('/api/cursos', require('./routers/cursos'));
 
-
 // Abrir la app en el puerto 3000
 
 app.listen(process.env.PORT, () => {
